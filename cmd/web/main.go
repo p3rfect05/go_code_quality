@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/alexedwards/scs/v2"
 	"github.com/p3rfect05/go_proj/config"
 	"github.com/p3rfect05/go_proj/pkg/handlers"
@@ -44,7 +45,7 @@ func main() {
 		Addr:    portNumber,
 		Handler: routes(&appConfig),
 	}
-
+	fmt.Printf("Server runs on %s port\n", portNumber)
 	err = srv.ListenAndServe()
 	log.Fatal(err)
 }
