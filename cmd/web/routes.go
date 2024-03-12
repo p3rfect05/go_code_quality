@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/p3rfect05/go_proj/config"
-	"github.com/p3rfect05/go_proj/pkg/handlers"
+	"github.com/p3rfect05/go_proj/internal/config"
+	"github.com/p3rfect05/go_proj/internal/handlers"
 	"net/http"
 )
 
@@ -24,6 +24,7 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/contact", handlers.Repo.Contact)
 
 	mux.Post("/search-availability", handlers.Repo.PostAvailability)
+	mux.Post("/search-availability-json", handlers.Repo.JSONAvailability)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))

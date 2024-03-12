@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/alexedwards/scs/v2"
-	"github.com/p3rfect05/go_proj/config"
-	"github.com/p3rfect05/go_proj/pkg/handlers"
-	"github.com/p3rfect05/go_proj/pkg/render"
+	"github.com/p3rfect05/go_proj/internal/config"
+	"github.com/p3rfect05/go_proj/internal/handlers"
+	"github.com/p3rfect05/go_proj/internal/render"
 	"log"
 	"net/http"
 	"time"
