@@ -1,0 +1,10 @@
+mode: set
+github.com/p3rfect05/go_proj/cmd/web/main.go:21.13,23.16 2 0
+github.com/p3rfect05/go_proj/cmd/web/main.go:23.16,25.3 1 0
+github.com/p3rfect05/go_proj/cmd/web/main.go:26.2,32.16 4 0
+github.com/p3rfect05/go_proj/cmd/web/main.go:35.18,50.16 10 1
+github.com/p3rfect05/go_proj/cmd/web/main.go:50.16,53.3 2 0
+github.com/p3rfect05/go_proj/cmd/web/main.go:55.2,61.12 6 1
+github.com/p3rfect05/go_proj/cmd/web/middleware.go:9.45,18.2 3 1
+github.com/p3rfect05/go_proj/cmd/web/middleware.go:21.50,23.2 1 1
+github.com/p3rfect05/go_proj/cmd/web/routes.go:11.49,35.2 18 1
