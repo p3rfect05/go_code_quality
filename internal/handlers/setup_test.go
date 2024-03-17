@@ -3,6 +3,14 @@ package handlers
 import (
 	"encoding/gob"
 	"fmt"
+	"html/template"
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
+	"testing"
+	"time"
+
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -11,12 +19,6 @@ import (
 	"github.com/p3rfect05/go_proj/internal/helpers"
 	"github.com/p3rfect05/go_proj/internal/models"
 	"github.com/p3rfect05/go_proj/internal/render"
-	"html/template"
-	"log"
-	"net/http"
-	"os"
-	"path/filepath"
-	"time"
 )
 
 var appConfig config.AppConfig
@@ -26,7 +28,7 @@ var pathToTemplates = "./../../templates"
 var infoLog *log.Logger
 var errorLog *log.Logger
 
-func getRoutes() http.Handler {
+func TestMain(m *testing.M) {
 	// what will be in the session
 	gob.Register(models.Reservation{})
 	//change to true when in production
@@ -56,10 +58,13 @@ func getRoutes() http.Handler {
 	appConfig.TemplateCache = tc
 	appConfig.UseCache = true
 
-	repo := NewRepo(&appConfig)
+	repo := newTestRepo(&appConfig)
 	NewHandlers(repo)
-	render.NewTemplates(&appConfig)
+	render.NewRenderer(&appConfig)
 	helpers.NewHelpers(&appConfig)
+	os.Exit(m.Run())
+}
+func getRoutes() http.Handler {
 
 	mux := chi.NewRouter()
 

@@ -1,4 +1,0 @@
-create_table("users") {
-  t.Column("email", "string", {})
-  t.Column("twitter_handle", "string", {"size": 50})
-}
