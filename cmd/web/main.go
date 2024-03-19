@@ -33,7 +33,6 @@ func main() {
 	defer db.SQL.Close()
 
 	defer close(appConfig.MailChannel)
-
 	listenToMail()
 	fmt.Println("Started mail listener...")
 
