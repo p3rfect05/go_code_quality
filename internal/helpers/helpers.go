@@ -2,9 +2,10 @@ package helpers
 
 import (
 	"fmt"
-	"github.com/p3rfect05/go_proj/internal/config"
 	"net/http"
 	"runtime/debug"
+
+	"github.com/p3rfect05/go_proj/internal/config"
 )
 
 var app *config.AppConfig
@@ -24,4 +25,8 @@ func ServerError(w http.ResponseWriter, err error) {
 	app.ErrorLog.Println(traceError)
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 
+}
+
+func IsAuthenticated(r *http.Request) bool {
+	return app.Session.Exists(r.Context(), "user_id")
 }

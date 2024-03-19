@@ -33,6 +33,11 @@ func TestMain(m *testing.M) {
 	gob.Register(models.Reservation{})
 	//change to true when in production
 
+	mailChan := make(chan models.MailData)
+	appConfig.MailChannel = mailChan
+	defer close(mailChan)
+	listenToMail()
+
 	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	appConfig.InfoLog = infoLog
 
@@ -63,6 +68,14 @@ func TestMain(m *testing.M) {
 	render.NewRenderer(&appConfig)
 	helpers.NewHelpers(&appConfig)
 	os.Exit(m.Run())
+}
+
+func listenToMail() {
+	go func() {
+		for {
+			<-appConfig.MailChannel
+		}
+	}()
 }
 func getRoutes() http.Handler {
 

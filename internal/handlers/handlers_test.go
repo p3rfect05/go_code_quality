@@ -2,9 +2,13 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/p3rfect05/go_proj/internal/models"
@@ -120,4 +124,58 @@ func getCtx(req *http.Request) context.Context {
 		log.Println(err)
 	}
 	return ctx
+}
+
+func TestRepository_PostReservation(t *testing.T) {
+	reqBody := "start_date=2050-01-02"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end_date=2050-01-10")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "first_name=alex")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "last_name=xela")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "email=z@z.com")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "phone=1-500")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=2")
+	req := httptest.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	ctx := getCtx(req)
+
+	req = req.WithContext(ctx)
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	rr := httptest.NewRecorder()
+
+	handler := http.HandlerFunc(Repo.PostReservation)
+	handler.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusTemporaryRedirect {
+		t.Errorf("PostReservation handler returned wrong response code, got %d, wanted %d", rr.Code, http.StatusTemporaryRedirect)
+	}
+}
+
+func TestRepository_JSONAvailability(t *testing.T) {
+
+	postedData := url.Values{}
+	postedData.Add("start", "2050-01-01")
+	postedData.Add("end", "2050-01-01")
+	postedData.Add("room_id", "2")
+
+
+	//create request
+	req := httptest.NewRequest("POST", "/search-availability-json", strings.NewReader(postedData.Encode()))
+	ctx := getCtx(req)
+	req = req.WithContext(ctx)
+	
+	//set the request header
+	req.Header.Set("Content-Type", "x-www-form-urlenencoded")
+	// make handler a handler func
+	handler := http.HandlerFunc(Repo.JSONAvailability)
+	rr := httptest.NewRecorder()
+	//make request to our handler
+	handler.ServeHTTP(rr, req)
+
+	var j jsonResponse
+	err := json.Unmarshal([]byte(rr.Body.String()), &j)
+	if err != nil {
+		t.Error("Failed to parse json response")
+	}
+
 }

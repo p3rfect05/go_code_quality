@@ -2,14 +2,15 @@ package render
 
 import (
 	"encoding/gob"
-	"github.com/alexedwards/scs/v2"
-	"github.com/p3rfect05/go_proj/internal/config"
-	"github.com/p3rfect05/go_proj/internal/models"
 	"log"
 	"net/http"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/alexedwards/scs/v2"
+	"github.com/p3rfect05/go_proj/internal/config"
+	"github.com/p3rfect05/go_proj/internal/models"
 )
 
 var session *scs.SessionManager

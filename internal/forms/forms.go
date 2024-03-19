@@ -2,9 +2,10 @@ package forms
 
 import (
 	"fmt"
-	"github.com/asaskevich/govalidator"
 	"net/url"
 	"strings"
+
+	"github.com/asaskevich/govalidator"
 )
 
 // Form creates a custom form structs, embeds url.Values object

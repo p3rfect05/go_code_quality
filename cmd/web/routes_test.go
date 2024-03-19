@@ -1,9 +1,10 @@
 package main
 
 import (
+	"testing"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/p3rfect05/go_proj/internal/config"
-	"testing"
 )
 
 func TestRoutes(t *testing.T) {

@@ -4,20 +4,21 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/justinas/nosurf"
-	"github.com/p3rfect05/go_proj/internal/config"
-	"github.com/p3rfect05/go_proj/internal/models"
 	"html/template"
 	"net/http"
 	"path/filepath"
+
+	"github.com/justinas/nosurf"
+	"github.com/p3rfect05/go_proj/internal/config"
+	"github.com/p3rfect05/go_proj/internal/models"
 )
 
 var functions = template.FuncMap{}
 var pathToTemplates = "./templates"
 var app *config.AppConfig
 
-// NewTemplates sets the config for the template package
-func NewTemplates(a *config.AppConfig) {
+// NewRenderer sets the config for the template package
+func NewRenderer(a *config.AppConfig) {
 	app = a
 }
 
@@ -26,9 +27,12 @@ func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateDa
 	td.Flash = app.Session.PopString(r.Context(), "flash")
 	td.Warning = app.Session.PopString(r.Context(), "warning")
 	td.Error = app.Session.PopString(r.Context(), "error")
+	if app.Session.Exists(r.Context(), "user_id") {
+		td.IsAuthenticated = 1
+	}
 	return td
 }
-func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) error {
+func Template(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) error {
 
 	var tc map[string]*template.Template
 

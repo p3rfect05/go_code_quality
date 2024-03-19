@@ -3,16 +3,18 @@ package main
 import (
 	"encoding/gob"
 	"fmt"
-	"github.com/alexedwards/scs/v2"
-	"github.com/p3rfect05/go_proj/internal/config"
-	"github.com/p3rfect05/go_proj/internal/handlers"
-	"github.com/p3rfect05/go_proj/internal/helpers"
-	"github.com/p3rfect05/go_proj/internal/models"
-	"github.com/p3rfect05/go_proj/internal/render"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/alexedwards/scs/v2"
+	"github.com/p3rfect05/go_proj/internal/config"
+	"github.com/p3rfect05/go_proj/internal/driver"
+	"github.com/p3rfect05/go_proj/internal/handlers"
+	"github.com/p3rfect05/go_proj/internal/helpers"
+	"github.com/p3rfect05/go_proj/internal/models"
+	"github.com/p3rfect05/go_proj/internal/render"
 )
 
 const portNumber = ":8080"
@@ -23,10 +25,18 @@ var infoLog *log.Logger
 var errorLog *log.Logger
 
 func main() {
-	err := run()
+	db, err := run()
+
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.SQL.Close()
+
+	defer close(appConfig.MailChannel)
+
+	listenToMail()
+	fmt.Println("Started mail listener...")
+
 	srv := &http.Server{
 		Addr:    portNumber,
 		Handler: routes(&appConfig),
@@ -36,9 +46,17 @@ func main() {
 	log.Fatal(err)
 }
 
-func run() error {
+func run() (*driver.DB, error) {
 	// what will be in the session
 	gob.Register(models.Reservation{})
+	gob.Register(models.Room{})
+	gob.Register(models.User{})
+	gob.Register(models.Restriction{})
+	gob.Register(models.RoomRestriction{})
+
+	mailChan := make(chan models.MailData)
+	appConfig.MailChannel = mailChan
+
 	//change to true when in production
 	appConfig.InProduction = false
 
@@ -56,20 +74,27 @@ func run() error {
 
 	appConfig.Session = session
 
+	//connect to database
+	log.Println("Connecting to database")
+	db, err := driver.ConnectSQL("host=localhost port=5432 database=go_proj user=postgres password=1234")
+	if err != nil {
+		log.Fatal("Cannot connect to database:", err)
+	}
+	log.Println("Connected to db!")
 	tc, err := render.CreateTemplateCache()
 
 	if err != nil {
 		log.Fatal("Cannot create template cache", err)
-		return err
+		return nil, err
 	}
 
 	appConfig.TemplateCache = tc
 	appConfig.UseCache = false
 
-	repo := handlers.NewRepo(&appConfig)
+	repo := handlers.NewRepo(&appConfig, db)
 	handlers.NewHandlers(repo)
-	render.NewTemplates(&appConfig)
+	render.NewRenderer(&appConfig)
 	helpers.NewHelpers(&appConfig)
 
-	return nil
+	return db, nil
 }

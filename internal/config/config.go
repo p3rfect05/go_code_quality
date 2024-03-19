@@ -1,9 +1,11 @@
 package config
 
 import (
-	"github.com/alexedwards/scs/v2"
 	"html/template"
 	"log"
+
+	"github.com/alexedwards/scs/v2"
+	"github.com/p3rfect05/go_proj/internal/models"
 )
 
 // AppConfig holds the application config
@@ -14,4 +16,5 @@ type AppConfig struct {
 	InfoLog       *log.Logger
 	ErrorLog      *log.Logger
 	Session       *scs.SessionManager
+	MailChannel   chan models.MailData
 }
