@@ -94,6 +94,6 @@ func run() (*driver.DB, error) {
 	handlers.NewHandlers(repo)
 	render.NewRenderer(&appConfig)
 	helpers.NewHelpers(&appConfig)
-
+	//fmt.Printf("%s", 5) // специально сделано для go vet
 	return db, nil
 }

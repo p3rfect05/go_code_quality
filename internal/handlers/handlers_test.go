@@ -14,10 +14,10 @@ import (
 	"github.com/p3rfect05/go_proj/internal/models"
 )
 
-type postData struct {
-	key   string
-	value string
-}
+// type postData struct {
+// 	key   string
+// 	value string
+// }
 
 var theTests = []struct {
 	name   string
@@ -69,7 +69,29 @@ func TestHandlers(t *testing.T) {
 	}
 
 }
+func BenchmarkHandlers(b *testing.B) {
+	routes := getRoutes()
+	ts := httptest.NewTLSServer(routes)
+	defer ts.Close()
+	b.ResetTimer()
+	for _, e := range theTests {
+		b.StopTimer()
+		b.StartTimer()
+		if e.method == "GET" {
+			for i := 0; i < b.N; i++ {
+				resp, err := ts.Client().Get(ts.URL + e.url)
+				if err != nil {
+					b.Fatal(err)
+				}
+				if resp.StatusCode != e.expectedStatusCode {
+					b.Fatalf("for %s expected %d, got %d", e.name, e.expectedStatusCode, resp.StatusCode)
+				}
+			}
+		}
 
+	}
+
+}
 func TestRepository_Reservation(t *testing.T) {
 	res := models.Reservation{
 		RoomID: 2,
@@ -158,12 +180,11 @@ func TestRepository_JSONAvailability(t *testing.T) {
 	postedData.Add("end", "2050-01-01")
 	postedData.Add("room_id", "2")
 
-
 	//create request
 	req := httptest.NewRequest("POST", "/search-availability-json", strings.NewReader(postedData.Encode()))
 	ctx := getCtx(req)
 	req = req.WithContext(ctx)
-	
+
 	//set the request header
 	req.Header.Set("Content-Type", "x-www-form-urlenencoded")
 	// make handler a handler func
@@ -173,7 +194,7 @@ func TestRepository_JSONAvailability(t *testing.T) {
 	handler.ServeHTTP(rr, req)
 
 	var j jsonResponse
-	err := json.Unmarshal([]byte(rr.Body.String()), &j)
+	err := json.Unmarshal(rr.Body.Bytes(), &j)
 	if err != nil {
 		t.Error("Failed to parse json response")
 	}

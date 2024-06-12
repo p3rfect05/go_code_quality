@@ -47,7 +47,7 @@ func Template(w http.ResponseWriter, r *http.Request, tmpl string, td *models.Te
 
 	if !ok {
 
-		return errors.New("Could not get template from Template cache")
+		return errors.New("could not get template from Template cache")
 	}
 	td = AddDefaultData(td, r)
 	buf := new(bytes.Buffer)

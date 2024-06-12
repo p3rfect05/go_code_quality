@@ -43,7 +43,7 @@ func (m *testDBRepo) SearchAvailabilityForAllRooms(start, end time.Time) ([]mode
 func (m *testDBRepo) SearchRoomByID(roomID int) (models.Room, error) {
 	var room models.Room
 	if roomID > 3 || roomID < 2 {
-		return room, errors.New("Some error")
+		return room, errors.New("some error")
 	}
 
 	return room, nil
