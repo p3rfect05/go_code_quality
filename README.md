@@ -1,1 +1,1 @@
-# go_code_quality
+## Don't pay attention to the project itself. Focus on Makefile only.
