@@ -5,6 +5,7 @@ task2:
 	go vet ./...
 
 task3:
+
 	golangci-lint run
 
 
