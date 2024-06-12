@@ -5,7 +5,6 @@ task2:
 	go vet ./...
 
 task3:
-	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.59.1
 	golangci-lint run
 
 
