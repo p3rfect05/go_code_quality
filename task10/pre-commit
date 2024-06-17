@@ -1,0 +1,10 @@
+#!/usr/bin/env python
+
+import sys, os 
+from subprocess import check_output
+
+
+#golint_check = check_output(["golangci-lint", "run"]).strip().decode()
+#print(golint_check)
+fmt_check = check_output(["go", "fmt",  "./..."])
+print(fmt_check)
